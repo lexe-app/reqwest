@@ -1,3 +1,5 @@
+#![allow(missing_docs)]
+
 use std::fmt;
 #[cfg(feature = "socks")]
 use std::net::SocketAddr;
@@ -549,6 +551,19 @@ impl ProxyScheme {
     ) -> Self {
         self.set_basic_auth(username, password);
         self
+    }
+
+    pub fn set_http_auth(&mut self, header: http::HeaderValue) {
+        match *self {
+            Self::Http { ref mut auth, .. } => {
+                *auth = Some(header);
+            }
+            Self::Https { ref mut auth, .. } => {
+                *auth = Some(header);
+            }
+            #[cfg(feature = "socks")]
+            Self::Socks5 { .. } => {}
+        }
     }
 
     fn set_basic_auth<T: Into<String>, U: Into<String>>(&mut self, username: T, password: U) {
