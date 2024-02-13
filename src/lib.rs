@@ -203,6 +203,23 @@
 //! [Proxy]: ./struct.Proxy.html
 //! [cargo-features]: https://doc.rust-lang.org/stable/cargo/reference/manifest.html#the-features-section
 
+/// Hack to trigger a compilation failure if any of these features is enabled
+#[cfg(any(
+    feature = "default-tls",
+    feature = "native-tls",
+    feature = "native-tls-alpn",
+    feature = "native-tls-vendored",
+    feature = "rustls-tls-webpki-roots",
+    feature = "rustls-tls-native-roots",
+))]
+pub const NO_MOZILLA_WEBPKI_OR_NATIVE_ROOTS: [usize; 0] =
+    "Do not use this feature!! For security, we do not trust Mozilla WebPKI \
+    roots or platform native roots. The only allowed reqwest TLS feature is \
+    `rustls-tls-manual-roots`. When developing, feel free to switch to a local \
+    reqwest patch which has this commented out, but otherwise, you should \
+    manually add the cert of the root CA of the website you are requesting in \
+    common::constants and configure the reqwest client to trust only one root.";
+
 macro_rules! if_wasm {
     ($($item:item)*) => {$(
         #[cfg(target_arch = "wasm32")]
