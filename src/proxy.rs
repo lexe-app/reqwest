@@ -1,3 +1,5 @@
+#![allow(missing_docs)]
+
 use std::fmt;
 #[cfg(feature = "socks")]
 use std::net::SocketAddr;
@@ -638,7 +640,7 @@ impl ProxyScheme {
         }
     }
 
-    fn set_custom_http_auth(&mut self, header_value: HeaderValue) {
+    pub fn set_custom_http_auth(&mut self, header_value: HeaderValue) {
         match *self {
             ProxyScheme::Http { ref mut auth, .. } => {
                 *auth = Some(header_value);
